@@ -1,6 +1,5 @@
 import API from './api';
 
-// Service to handle user registration and login requests
 export const authService = {
     register: async (userData: any) => {
         const response = await API.post('auth/register/', userData);
@@ -10,7 +9,6 @@ export const authService = {
     login: async (credentials: any) => {
         const response = await API.post('auth/login/', credentials);
         if (response.data.access) {
-            // Store tokens and user details in localStorage upon successful login
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('user_role', response.data.role);
@@ -19,8 +17,18 @@ export const authService = {
         return response.data;
     },
 
+    // New profile service function to fetch or update authenticated user data
+    getProfile: async () => {
+        const response = await API.get('auth/profile/');
+        return response.data;
+    },
+
+    updateProfile: async (profileData: any) => {
+        const response = await API.put('auth/profile/', profileData);
+        return response.data;
+    },
+
     logout: () => {
-        // Clear all session details on logout
         localStorage.clear();
     }
 };

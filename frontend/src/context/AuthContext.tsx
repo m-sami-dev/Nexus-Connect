@@ -8,6 +8,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string, role: UserRole) => Promise<void>;
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
+  updateProfile: (userId: string, updates: Partial<User>) => Promise<void>;
   logout: () => void;
 }
 
@@ -17,39 +18,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user session exists on app load
-    const token = localStorage.getItem('access_token');
-    const role = localStorage.getItem('user_role') as UserRole;
-    const email = localStorage.getItem('user_email');
+  // Helper function to map API response securely to your strict frontend User Type
+  const mapProfileToUser = (apiData: any): User => {
+    return {
+      id: apiData.id.toString(),
+      name: apiData.username,
+      email: apiData.email,
+      role: apiData.role as UserRole,
+      companyName: apiData.company_name,
+      industry: apiData.industry,
+      bio: apiData.bio || '',
+      avatarUrl: apiData.profile_picture || '', // Fixed missing property error
+      createdAt: new Date().toISOString(),     // Fixed missing property error
+    };
+  };
 
-    if (token && role && email) {
-      setUser({
-        id: '1', // Static ID for session mapping
-        name: email.split('@')[0], // Fallback name from email
-        email: email,
-        role: role,
-      });
+  const fetchUserProfile = async () => {
+    try {
+      const profileData = await authService.getProfile();
+      setUser(mapProfileToUser(profileData));
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+      authService.logout();
+      setUser(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      fetchUserProfile();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = async (email: string, password: string, role: UserRole) => {
     try {
       const data = await authService.login({ email, password });
-      
-      // Validation to ensure user logs into the correct dashboard role
       if (data.role !== role) {
         authService.logout();
         throw new Error(`Invalid credentials for role: ${role}`);
       }
-
-      setUser({
-        id: data.id || '1',
-        name: data.username,
-        email: data.email,
-        role: data.role as UserRole,
-      });
+      await fetchUserProfile();
     } catch (error: any) {
       const errorMessage = error.response?.data?.detail || error.message || 'Login failed';
       throw new Error(errorMessage);
@@ -59,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (name: string, email: string, password: string, role: UserRole) => {
     try {
       await authService.register({
-        username: name.toLowerCase().replace(/\s+/g, ''), // Generate valid unique username
+        username: name.toLowerCase().replace(/\s+/g, ''),
         email,
         password,
         role,
@@ -74,13 +87,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Fixed signature mismatch: now correctly accepts userId and Partial<User>
+  const updateProfile = async (userId: string, updates: Partial<User>) => {
+    try {
+      const backendPayload = {
+        username: updates.name,
+        company_name: updates.companyName,
+        industry: updates.industry,
+        bio: updates.bio,
+      };
+      const updated = await authService.updateProfile(backendPayload);
+      setUser(mapProfileToUser(updated));
+    } catch (error: any) {
+      throw new Error('Failed to update profile details');
+    }
+  };
+
   const logout = () => {
     authService.logout();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );

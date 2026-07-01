@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  companyName?: string; 
+  industry?: string;    
   avatarUrl: string;
   bio: string;
   isOnline?: boolean;
