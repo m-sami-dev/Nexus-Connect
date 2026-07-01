@@ -7,9 +7,9 @@ import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
 import { useAuth } from '../../context/AuthContext';
-import { Entrepreneur } from '../../types';
 import { entrepreneurs } from '../../data/users';
 import { getRequestsFromInvestor } from '../../data/collaborationRequests';
+import { MeetingsList } from '../../components/collaboration/MeetingsList';
 
 export const InvestorDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -18,30 +18,23 @@ export const InvestorDashboard: React.FC = () => {
   
   if (!user) return null;
   
-  // Get collaboration requests sent by this investor
   const sentRequests = getRequestsFromInvestor(user.id);
-  const requestedEntrepreneurIds = sentRequests.map(req => req.entrepreneurId);
   
-  // Filter entrepreneurs based on search and industry filters
   const filteredEntrepreneurs = entrepreneurs.filter(entrepreneur => {
-    // Search filter
     const matchesSearch = searchQuery === '' || 
       entrepreneur.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entrepreneur.startupName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entrepreneur.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entrepreneur.pitchSummary.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Industry filter
     const matchesIndustry = selectedIndustries.length === 0 || 
       selectedIndustries.includes(entrepreneur.industry);
     
     return matchesSearch && matchesIndustry;
   });
   
-  // Get unique industries for filter
   const industries = Array.from(new Set(entrepreneurs.map(e => e.industry)));
   
-  // Toggle industry selection
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries(prevSelected => 
       prevSelected.includes(industry)
@@ -59,16 +52,14 @@ export const InvestorDashboard: React.FC = () => {
         </div>
         
         <Link to="/entrepreneurs">
-          <Button
-            leftIcon={<PlusCircle size={18} />}
-          >
+          <Button leftIcon={<PlusCircle size={18} />}>
             View All Startups
           </Button>
         </Link>
       </div>
       
       {/* Filters and search */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
         <div className="w-full md:w-2/3">
           <Input
             placeholder="Search startups, industries, or keywords..."
@@ -79,21 +70,24 @@ export const InvestorDashboard: React.FC = () => {
           />
         </div>
         
-        <div className="w-full md:w-1/3">
-          <div className="flex items-center space-x-2">
-            <Filter size={18} className="text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Filter by:</span>
+        <div className="w-full md:w-1/3 flex items-center">
+          <div className="flex items-center space-x-2 flex-wrap">
+            <div className="flex items-center space-x-1 text-gray-500 mr-2">
+              <Filter size={18} />
+              <span className="text-sm font-medium text-gray-700">Filter:</span>
+            </div>
             
             <div className="flex flex-wrap gap-2">
               {industries.map(industry => (
-                <Badge
-                  key={industry}
-                  variant={selectedIndustries.includes(industry) ? 'primary' : 'gray'}
-                  className="cursor-pointer"
-                  onClick={() => toggleIndustry(industry)}
+                <div 
+                  key={industry} 
+                  onClick={() => toggleIndustry(industry)} 
+                  className="cursor-pointer inline-block"
                 >
-                  {industry}
-                </Badge>
+                  <Badge variant={selectedIndustries.includes(industry) ? 'primary' : 'gray'}>
+                    {industry}
+                  </Badge>
+                </div>
               ))}
             </div>
           </div>
@@ -146,8 +140,9 @@ export const InvestorDashboard: React.FC = () => {
           </CardBody>
         </Card>
       </div>
+
+      <MeetingsList />
       
-      {/* Entrepreneurs grid */}
       <div>
         <Card>
           <CardHeader>

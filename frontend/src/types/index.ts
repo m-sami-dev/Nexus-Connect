@@ -81,3 +81,31 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+
+// Chat System Interfaces
+export interface ChatMessage {
+  id: string;
+  chatId: string; // To group messages between two specific users
+  senderId: number;
+  text: string;
+  timestamp: string;
+}
+
+export interface ChatThread {
+  id: string;
+  participantId: number;
+  participantName: string;
+  participantRole: 'investor' | 'entrepreneur';
+  lastMessage: string;
+  updatedAt: string;
+}
+
+export interface DocumentFile {
+  id: string;
+  name: string;
+  type: 'PDF' | 'DOCX' | 'PPTX';
+  size: string;
+  uploadedAt: string;
+  sharedWith: string[]; // List of Investor IDs
+}

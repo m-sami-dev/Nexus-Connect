@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
+from django.db import models 
+from django.contrib.auth import get_user_model
 
 class User(AbstractUser):
     # Role choices define kar rahe hain
@@ -23,3 +24,60 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+    
+
+
+User = get_user_model()
+
+class StartupPitch(models.Model):
+    entrepreneur = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'entrepreneur'}, related_name='pitches')
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    funding_goal = models.DecimalField(max_digits=12, decimal_places=2)
+    industry = models.CharField(max_length=100)
+    pitch_deck = models.FileField(upload_to='pitch_decks/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.entrepreneur.username}"
+
+
+class ConnectionRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    investor = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'investor'}, related_name='sent_connections')
+    entrepreneur = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'entrepreneur'}, related_name='received_connections')
+    pitch = models.ForeignKey(StartupPitch, on_delete=models.CASCADE, related_name='connections')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('investor', 'pitch')
+
+    def __str__(self):
+        return f"{self.investor.username} -> {self.pitch.title} ({self.status})"
+    
+    
+class Meeting(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
+    # Links the meeting to organizer and participant roles
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_meetings')
+    participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attending_meetings')
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"

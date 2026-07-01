@@ -20,7 +20,7 @@ import { InvestorProfile } from './pages/profile/InvestorProfile';
 // Feature Pages
 import { InvestorsPage } from './pages/investors/InvestorsPage';
 import { EntrepreneursPage } from './pages/entrepreneurs/EntrepreneursPage';
-import { MessagesPage } from './pages/messages/MessagesPage';
+// import { MessagesPage } from './pages/messages/MessagesPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
 import { DocumentsPage } from './pages/documents/DocumentsPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
@@ -29,6 +29,8 @@ import { DealsPage } from './pages/deals/DealsPage';
 
 // Chat Pages
 import { ChatPage } from './pages/chat/ChatPage';
+
+import { MessagesPage } from './pages/dashboard/MessagesPage';
 
 function App() {
   return (
