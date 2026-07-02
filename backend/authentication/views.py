@@ -13,6 +13,11 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from .models import Meeting
 from .serializers import MeetingSerializer
+from django.core.exceptions import ValidationError 
+
+from rest_framework import generics, permissions
+from .models import Document
+from .serializers import DocumentSerializer 
 
 class RegisterView(APIView):
     # This endpoint handles user registration for both Investors and Entrepreneurs
@@ -70,7 +75,6 @@ class StartupPitchViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Jab entrepreneur pitch create karega, toh logged-in user automatically assign ho jayega
         serializer.save(entrepreneur=self.request.user)
 
 
@@ -80,12 +84,10 @@ class ConnectionRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Connection request bhejne wala automatically logged-in investor ban jayega
         serializer.save(investor=self.request.user)
 
     def get_queryset(self):
         user = self.request.user
-        # Entrepreneurs ko sirf unki received requests dikhein, aur investors ko unki sent requests
         if user.role == 'entrepreneur':
             return ConnectionRequest.objects.filter(entrepreneur=user).order_by('-created_at')
         return ConnectionRequest.objects.filter(investor=user).order_by('-created_at')
@@ -103,11 +105,26 @@ class MeetingViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Meeting.objects.filter(Q(organizer=user) | Q(participant=user)).order_by('-start_time')
 
+    # Upar import mein add karein
+
+# MeetingViewSet mein perform_create ko update karein:
     def perform_create(self, serializer):
-        """
-        Automatically set the logged-in user as the organizer of the meeting.
-        """
-        serializer.save(organizer=self.request.user)
+        user = self.request.user
+        start_time = serializer.validated_data['start_time']
+        end_time = serializer.validated_data['end_time']
+
+        # Conflict Detection Logic: 
+        # Check karein kya isi time frame mein user ki koi aur 'accepted' ya 'pending' meeting hai?
+        conflict = Meeting.objects.filter(
+            Q(organizer=user) | Q(participant=user),
+            start_time__lt=end_time,
+            end_time__gt=start_time
+        ).exists()
+
+        if conflict:
+            raise ValidationError("Aapki is waqt pehle se hi koi aur meeting scheduled hai!")
+
+        serializer.save(organizer=user)
 
     @action(detail=True, methods=['post'])
     def accept(self, request, pk=None):
@@ -142,3 +159,20 @@ class MeetingViewSet(viewsets.ModelViewSet):
         meeting.status = 'rejected'
         meeting.save()
         return Response({'status': 'meeting rejected', 'meeting_status': meeting.status}, status=status.HTTP_200_OK)
+    
+
+
+class DocumentUploadView(generics.CreateAPIView):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+        
+class ProcessPaymentView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        # Yahan hum mock payment logic set karenge
+        serializer.save(sender=self.request.user, status='completed')

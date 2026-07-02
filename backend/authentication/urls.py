@@ -8,6 +8,9 @@ from .views import (
     ConnectionRequestViewSet,
     MeetingViewSet
 )
+from .views import DocumentUploadView
+
+
 
 router = DefaultRouter()
 router.register(r'pitches', StartupPitchViewSet, basename='pitch')
@@ -20,4 +23,5 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='profile'),
     
     path('', include(router.urls)),
+    path('documents/upload/', DocumentUploadView.as_view(), name='document-upload'),
 ]

@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from .models import User, StartupPitch, ConnectionRequest
 from django.db.models import Q
 from .models import Meeting
+from rest_framework import serializers
+from .models import Document
 
 
 User = get_user_model()
@@ -106,3 +108,10 @@ class MeetingSerializer(serializers.ModelSerializer):
             )
 
         return data
+    
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class DRF_Meta:
+        model = Document
+        fields = ['id', 'title', 'file', 'uploaded_at', 'status']

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { getMeetingsForUser, updateMeetingStatus, Meeting } from '../../data/meetings';
 import { useAuth } from '../../context/AuthContext';
 
-export const MeetingsList: React.FC = () => {
+interface MeetingsListProps {
+  onJoinCall: (roomId: string) => void;
+}
+
+export const MeetingsList: React.FC<MeetingsListProps> = ({ onJoinCall }) => {
   const { user } = useAuth();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
 
@@ -16,8 +20,6 @@ export const MeetingsList: React.FC = () => {
 
   useEffect(() => {
     loadMeetings();
-    
-    // Listen for updates across windows/tabs or components
     window.addEventListener('storage', loadMeetings);
     return () => window.removeEventListener('storage', loadMeetings);
   }, [user]);
@@ -25,7 +27,7 @@ export const MeetingsList: React.FC = () => {
   const handleStatusChange = (meetingId: string, status: 'accepted' | 'rejected') => {
     const success = updateMeetingStatus(meetingId, status);
     if (success) {
-      loadMeetings(); // Real-time UI refresh
+      loadMeetings();
     }
   };
 
@@ -62,11 +64,6 @@ export const MeetingsList: React.FC = () => {
                   <p className="text-xs text-gray-600 mt-0.5">
                     With: <span className="font-medium text-gray-800">{meeting.participantName}</span>
                   </p>
-                  {meeting.description && (
-                    <p className="text-xs text-gray-500 mt-2 italic bg-white p-2 rounded border border-gray-100">
-                      {meeting.description}
-                    </p>
-                  )}
                 </div>
 
                 <div className="text-left sm:text-right flex flex-col sm:items-end justify-between min-w-[120px]">
@@ -74,23 +71,36 @@ export const MeetingsList: React.FC = () => {
                     📅 {meeting.date} <br /> 🕒 {meeting.time}
                   </div>
 
-                  {/* Actions visible only for pending receiving requests */}
-                  {meeting.status === 'pending' && meeting.receiverId === Number(user.id) && (
-  <div className="flex gap-1.5 mt-3 sm:mt-2 w-full">
-    <button
-      onClick={() => handleStatusChange(meeting.id, 'accepted')}
-      className="flex-1 text-center py-1 bg-green-600 text-white rounded text-xs font-medium hover:bg-green-700 transition-colors"
-    >
-      Accept
-    </button>
-    <button
-      onClick={() => handleStatusChange(meeting.id, 'rejected')}
-      className="flex-1 text-center py-1 bg-gray-200 text-gray-700 rounded text-xs font-medium hover:bg-gray-300 transition-colors"
-    >
-      Decline
-    </button>
-  </div>
-)}
+                  {/* Actions Area */}
+                  <div className="flex flex-col gap-1.5 mt-3 w-full">
+                    {/* Join Button */}
+                    {meeting.status === 'accepted' && (
+                      <button
+                        onClick={() => onJoinCall(meeting.id.toString())}
+                        className="w-full py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700 transition-colors"
+                      >
+                        Join Video Call
+                      </button>
+                    )}
+
+                    {/* Accept/Decline Buttons */}
+                    {meeting.status === 'pending' && meeting.receiverId === Number(user.id) && (
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={() => handleStatusChange(meeting.id, 'accepted')}
+                          className="flex-1 text-center py-1 bg-green-600 text-white rounded text-xs font-medium hover:bg-green-700 transition-colors"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(meeting.id, 'rejected')}
+                          className="flex-1 text-center py-1 bg-gray-200 text-gray-700 rounded text-xs font-medium hover:bg-gray-300 transition-colors"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

@@ -10,10 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os  # Yeh add karna zaroori hai
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Media files configuration
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 
 # Quick-start development settings - unsuitable for production
@@ -79,10 +84,21 @@ WSGI_APPLICATION = 'nexus_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'nexus_db',
+        'USER': 'nexus_user',
+        'PASSWORD': 'NexusPassword123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -138,3 +154,20 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'authentication.User'
+
+ASGI_APPLICATION = 'nexus_backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
+# Security Enhancements
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Yahan 'localhost' aur apne production domain (vercel/render) ko add karna hoga
+ALLOWED_HOSTS = ['localhost', '127.0.0.1'] 
+
+# CSRF Settings (Frontend React ke liye zaroori hai)
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
