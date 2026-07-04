@@ -85,6 +85,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'username': self.user.username,
             'role': self.user.role,
         }
+        # Also expose at top level since the frontend reads data.role / data.email directly
+        data['id'] = self.user.id
+        data['role'] = self.user.role
+        data['email'] = self.user.email
+        data['username'] = self.user.username
         return data
 
 
@@ -209,9 +214,10 @@ class ConnectionRequestViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        """Associate connection request with the investor creating it"""
+        """Investor sends a connection request; entrepreneur is derived from the pitch"""
         try:
-            serializer.save(investor=self.request.user)
+            pitch = serializer.validated_data['pitch']
+            serializer.save(investor=self.request.user, entrepreneur=pitch.entrepreneur)
             logger.info(f"Connection request created by investor: {self.request.user.email}")
         except Exception as e:
             logger.error(f"Error creating connection request: {str(e)}", exc_info=True)
@@ -223,6 +229,46 @@ class ConnectionRequestViewSet(viewsets.ModelViewSet):
         if user.role == 'entrepreneur':
             return ConnectionRequest.objects.filter(entrepreneur=user).order_by('-created_at')
         return ConnectionRequest.objects.filter(investor=user).order_by('-created_at')
+
+    @action(detail=True, methods=['post'])
+    def accept(self, request, pk=None):
+        """Only the entrepreneur who received this request can accept it"""
+        connection = self.get_object()
+
+        if connection.entrepreneur != request.user:
+            logger.warning(f"Unauthorized attempt to accept connection {connection.id}")
+            return Response(
+                {"success": False, "error": "You do not have permission to accept this request"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        connection.status = 'accepted'
+        connection.save()
+        logger.info(f"Connection {connection.id} accepted by {request.user.email}")
+        return Response(
+            {"success": True, "message": "Connection request accepted", "status": connection.status},
+            status=status.HTTP_200_OK
+        )
+
+    @action(detail=True, methods=['post'])
+    def reject(self, request, pk=None):
+        """Only the entrepreneur who received this request can reject it"""
+        connection = self.get_object()
+
+        if connection.entrepreneur != request.user:
+            logger.warning(f"Unauthorized attempt to reject connection {connection.id}")
+            return Response(
+                {"success": False, "error": "You do not have permission to reject this request"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        connection.status = 'rejected'
+        connection.save()
+        logger.info(f"Connection {connection.id} rejected by {request.user.email}")
+        return Response(
+            {"success": True, "message": "Connection request rejected", "status": connection.status},
+            status=status.HTTP_200_OK
+        )
 
 
 class MeetingViewSet(viewsets.ModelViewSet):

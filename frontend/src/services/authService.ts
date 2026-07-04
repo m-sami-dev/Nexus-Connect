@@ -17,15 +17,15 @@ export const authService = {
         return response.data;
     },
 
-    // New profile service function to fetch or update authenticated user data
+    // Unwrap the { success, data } envelope the backend now returns
     getProfile: async () => {
         const response = await API.get('auth/profile/');
-        return response.data;
+        return response.data.data;
     },
 
     updateProfile: async (profileData: any) => {
         const response = await API.put('auth/profile/', profileData);
-        return response.data;
+        return response.data.data;
     },
 
     logout: () => {

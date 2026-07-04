@@ -75,13 +75,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         username: name.toLowerCase().replace(/\s+/g, ''),
         email,
         password,
+        password_confirm: password,
         role,
       });
     } catch (error: any) {
       const errorData = error.response?.data;
       let errorMessage = 'Registration failed';
-      if (errorData) {
-        errorMessage = Object.values(errorData).flat().join(' ') || errorMessage;
+      if (errorData?.details) {
+        // details holds field-level messages, e.g. { username: [...], password: [...] }
+        errorMessage = Object.values(errorData.details).flat().join(' ') || errorMessage;
+      } else if (errorData?.error) {
+        errorMessage = errorData.error;
       }
       throw new Error(errorMessage);
     }

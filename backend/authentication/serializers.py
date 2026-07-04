@@ -126,7 +126,7 @@ class ConnectionRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConnectionRequest
         fields = ['id', 'investor', 'investor_name', 'entrepreneur', 'entrepreneur_name', 'pitch', 'pitch_title', 'status', 'created_at']
-        read_only_fields = ['id', 'investor', 'status', 'created_at']
+        read_only_fields = ['id', 'investor', 'entrepreneur', 'status', 'created_at']
 
 
 class MeetingSerializer(serializers.ModelSerializer):

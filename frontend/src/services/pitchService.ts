@@ -1,4 +1,5 @@
 import axios from 'axios';
+import API from './api';
 
 const API_URL = 'http://localhost:8000/api/auth/pitches/';
 
@@ -8,13 +9,13 @@ const API_URL = 'http://localhost:8000/api/auth/pitches/';
  */
 export const createPitch = async (pitchData: any, token: string) => {
   const formData = new FormData();
-  
+
   // Append text fields to FormData
   formData.append('title', pitchData.title);
   formData.append('description', pitchData.description);
   formData.append('funding_goal', pitchData.funding_goal);
   formData.append('industry', pitchData.industry);
-  
+
   // Append pitch deck file if it exists
   if (pitchData.pitch_deck) {
     formData.append('pitch_deck', pitchData.pitch_deck);
@@ -29,4 +30,14 @@ export const createPitch = async (pitchData: any, token: string) => {
   });
 
   return response.data;
+};
+
+/**
+ * Fetches all startup pitches for the Investor Feed.
+ * Every registered investor sees every pitch by default (no permission layer).
+ */
+export const fetchPitches = async () => {
+  const response = await API.get('auth/pitches/');
+  // Backend uses pagination, so the real list is inside `results`
+  return response.data.results ?? response.data;
 };
