@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { saveMeetingRequest } from '../../data/meetings';
+import { createMeeting } from '../../services/meetingService';
 import { useAuth } from '../../context/AuthContext';
 
 interface ScheduleMeetingFormProps {
@@ -19,30 +19,36 @@ export const ScheduleMeetingForm: React.FC<ScheduleMeetingFormProps> = ({
   const [time, setTime] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
+    setError('');
     setLoading(true);
 
     try {
-      // Saving to our mock backend layer
-      saveMeetingRequest({
-        senderId: Number(user.id),
-        receiverId: participantId,
-        participantName: participantName,
+      const startDateTime = new Date(`${date}T${time}`);
+      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // default 1-hour meeting
+
+      await createMeeting({
+        participant: participantId,
         title,
-        date,
-        time,
         description,
+        start_time: startDateTime.toISOString(),
+        end_time: endDateTime.toISOString(),
       });
 
-      alert('Meeting scheduled successfully!');
+      alert('Meeting request sent successfully!');
       onSuccess();
-    } catch (error) {
-      console.error(error);
-      alert('Failed to schedule meeting.');
+    } catch (err: any) {
+      const backendError =
+        err.response?.data?.non_field_errors?.[0] ||
+        err.response?.data?.error ||
+        err.response?.data?.detail ||
+        'Failed to schedule meeting. Please check for scheduling conflicts.';
+      setError(backendError);
     } finally {
       setLoading(false);
     }
@@ -54,6 +60,12 @@ export const ScheduleMeetingForm: React.FC<ScheduleMeetingFormProps> = ({
         <h3 className="text-lg font-bold text-gray-900">Schedule Meeting</h3>
         <p className="text-sm text-gray-500">With Investor: <span className="font-semibold text-gray-700">{participantName}</span></p>
       </div>
+
+      {error && (
+        <div className="p-2 rounded-md text-sm bg-red-100 text-red-800 border border-red-200">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-3">
         <div>

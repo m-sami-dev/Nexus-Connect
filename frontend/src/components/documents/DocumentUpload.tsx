@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, Check, AlertCircle } from 'lucide-react';
+import { Upload, Check, AlertCircle, Eye, PenTool, X } from 'lucide-react';
 import { API_BASE_URL } from '../../services/api';
+import { PDFViewer } from './PDFViewer';
+import { SignaturePad } from './SignaturePad';
 
 interface UploadStatus {
   status: 'idle' | 'uploading' | 'success' | 'error';
@@ -13,6 +15,8 @@ export const DocumentUpload: React.FC = () => {
   const [title, setTitle] = useState('');
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>({ status: 'idle' });
   const [documents, setDocuments] = useState<any[]>([]);
+  const [viewingDoc, setViewingDoc] = useState<any | null>(null);
+  const [signingDoc, setSigningDoc] = useState<any | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const ALLOWED_TYPES = [
@@ -33,7 +37,6 @@ export const DocumentUpload: React.FC = () => {
 
     if (!selectedFile) return;
 
-    // Validate file type
     if (!ALLOWED_TYPES.includes(selectedFile.type)) {
       setUploadStatus({
         status: 'error',
@@ -42,7 +45,6 @@ export const DocumentUpload: React.FC = () => {
       return;
     }
 
-    // Validate file size
     if (selectedFile.size > MAX_SIZE) {
       setUploadStatus({
         status: 'error',
@@ -86,8 +88,6 @@ export const DocumentUpload: React.FC = () => {
         throw new Error('Upload failed');
       }
 
-      const result = await response.json();
-
       setUploadStatus({
         status: 'success',
         message: 'Document uploaded successfully!',
@@ -99,7 +99,6 @@ export const DocumentUpload: React.FC = () => {
         fileInputRef.current.value = '';
       }
 
-      // Refresh documents list
       fetchDocuments();
     } catch (error) {
       setUploadStatus({
@@ -120,7 +119,8 @@ export const DocumentUpload: React.FC = () => {
       });
 
       const data = await response.json();
-      setDocuments(data.documents || []);
+      // Backend uses DRF pagination, so the real list is inside `results`
+      setDocuments(data.results ?? data.documents ?? []);
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
@@ -138,6 +138,8 @@ export const DocumentUpload: React.FC = () => {
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  const isPdf = (doc: any) => doc.file?.toLowerCase().endsWith('.pdf');
+
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Upload Section */}
@@ -148,7 +150,6 @@ export const DocumentUpload: React.FC = () => {
         </h2>
 
         <div className="space-y-4">
-          {/* Title Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Document Title
@@ -162,7 +163,6 @@ export const DocumentUpload: React.FC = () => {
             />
           </div>
 
-          {/* File Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Select File
@@ -180,7 +180,6 @@ export const DocumentUpload: React.FC = () => {
             </p>
           </div>
 
-          {/* Selected File Info */}
           {file && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-sm">
@@ -189,37 +188,20 @@ export const DocumentUpload: React.FC = () => {
             </div>
           )}
 
-          {/* Status Messages */}
           {uploadStatus.status === 'error' && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-gap-2">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
               <AlertCircle size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-red-700">{uploadStatus.message}</p>
             </div>
           )}
 
           {uploadStatus.status === 'success' && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-gap-2">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
               <Check size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-green-700">{uploadStatus.message}</p>
             </div>
           )}
 
-          {uploadStatus.status === 'uploading' && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-blue-700">Uploading...</p>
-                <p className="text-sm font-semibold text-blue-700">{uploadStatus.progress}%</p>
-              </div>
-              <div className="w-full bg-blue-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all"
-                  style={{ width: `${uploadStatus.progress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Upload Button */}
           <button
             onClick={handleUpload}
             disabled={!file || !title.trim() || uploadStatus.status === 'uploading'}
@@ -240,14 +222,14 @@ export const DocumentUpload: React.FC = () => {
           <div className="space-y-3">
             {documents.map((doc) => (
               <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{doc.title}</h3>
                     <p className="text-sm text-gray-500 mt-1">
                       Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(doc.status)}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusBadge(doc.status)}`}>
                     {doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}
                   </span>
                 </div>
@@ -257,11 +239,71 @@ export const DocumentUpload: React.FC = () => {
                     <p className="text-xs text-green-700 font-semibold">✓ Digitally Signed</p>
                   </div>
                 )}
+
+                <div className="flex gap-2 mt-3">
+                  {isPdf(doc) && (
+                    <button
+                      onClick={() => setViewingDoc(doc)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      <Eye size={14} />
+                      View
+                    </button>
+                  )}
+
+                  {doc.status !== 'signed' && (
+                    <button
+                      onClick={() => setSigningDoc(doc)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors"
+                    >
+                      <PenTool size={14} />
+                      Sign
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* PDF Preview Modal */}
+      {viewingDoc && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl">
+            <button
+              onClick={() => setViewingDoc(null)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300"
+              aria-label="Close preview"
+            >
+              <X size={24} />
+            </button>
+            <PDFViewer documentUrl={viewingDoc.file} fileName={viewingDoc.title} />
+          </div>
+        </div>
+      )}
+
+      {/* Signature Modal */}
+      {signingDoc && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-2xl">
+            <button
+              onClick={() => setSigningDoc(null)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300"
+              aria-label="Close signature pad"
+            >
+              <X size={24} />
+            </button>
+            <SignaturePad
+              documentId={signingDoc.id}
+              onSignatureSaved={() => {
+                setSigningDoc(null);
+                fetchDocuments();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

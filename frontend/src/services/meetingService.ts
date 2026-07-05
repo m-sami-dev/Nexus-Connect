@@ -1,27 +1,34 @@
-import axios from 'axios';
+import API from './api';
 
-const API_URL = 'http://127.0.0.1:8000/api/auth/meetings/';
+export interface CreateMeetingPayload {
+  participant: number;
+  title: string;
+  description?: string;
+  start_time: string; // ISO datetime string
+  end_time: string;   // ISO datetime string
+}
 
-// Fetch all meetings linked to the logged-in user
-export const fetchMeetings = async (token: string) => {
-  const response = await axios.get(API_URL, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// Fetch all meetings linked to the logged-in user (as organizer or participant)
+export const fetchMeetings = async () => {
+  const response = await API.get('auth/meetings/');
+  // Backend uses pagination, so the real list is inside `results`
+  return response.data.results ?? response.data;
+};
+
+// Schedule a new meeting (runs backend conflict detection automatically)
+export const createMeeting = async (payload: CreateMeetingPayload) => {
+  const response = await API.post('auth/meetings/', payload);
   return response.data;
 };
 
-// Accept a pending meeting invite
-export const acceptMeeting = async (meetingId: number, token: string) => {
-  const response = await axios.post(`${API_URL}${meetingId}/accept/`, {}, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// Accept a pending meeting invite (only the participant can do this)
+export const acceptMeeting = async (meetingId: number) => {
+  const response = await API.post(`auth/meetings/${meetingId}/accept/`);
   return response.data;
 };
 
-// Reject/Cancel a meeting request
-export const rejectMeeting = async (meetingId: number, token: string) => {
-  const response = await axios.post(`${API_URL}${meetingId}/reject/`, {}, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// Reject a pending meeting invite (only the participant can do this)
+export const rejectMeeting = async (meetingId: number) => {
+  const response = await API.post(`auth/meetings/${meetingId}/reject/`);
   return response.data;
 };
