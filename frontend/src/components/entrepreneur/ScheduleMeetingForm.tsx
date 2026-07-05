@@ -85,6 +85,7 @@ export const ScheduleMeetingForm: React.FC<ScheduleMeetingFormProps> = ({
             <label className="block text-xs font-semibold text-gray-700 mb-1">Date</label>
             <input
               type="date"
+              aria-label="Meeting date"
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -95,6 +96,7 @@ export const ScheduleMeetingForm: React.FC<ScheduleMeetingFormProps> = ({
             <label className="block text-xs font-semibold text-gray-700 mb-1">Time</label>
             <input
               type="time"
+              aria-label="Meeting time"
               required
               value={time}
               onChange={(e) => setTime(e.target.value)}
