@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/Avatar';
 import { useAuth } from '../../context/AuthContext';
+import { sendOtp, verifyOtp, disable2FA } from '../../services/twofaService';
 
 export const SettingsPage: React.FC = () => {
   const { user, updateProfile } = useAuth();
@@ -20,7 +21,63 @@ export const SettingsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // 2FA states
+  const [is2faEnabled, setIs2faEnabled] = useState(user?.is2faEnabled || false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpMessage, setOtpMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   if (!user) return null;
+
+  const handleEnable2FA = async () => {
+    setOtpLoading(true);
+    setOtpMessage(null);
+    try {
+      const res = await sendOtp();
+      setOtpSent(true);
+      setOtpMessage({ type: 'success', text: res.message });
+    } catch (err: any) {
+      setOtpMessage({ type: 'error', text: err.response?.data?.error || 'Failed to send code.' });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode) {
+      setOtpMessage({ type: 'error', text: 'Please enter the code sent to your email.' });
+      return;
+    }
+    setOtpLoading(true);
+    setOtpMessage(null);
+    try {
+      await verifyOtp(otpCode);
+      setIs2faEnabled(true);
+      setOtpSent(false);
+      setOtpCode('');
+      setOtpMessage({ type: 'success', text: 'Two-factor authentication enabled!' });
+    } catch (err: any) {
+      setOtpMessage({ type: 'error', text: err.response?.data?.error || 'Verification failed.' });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleDisable2FA = async () => {
+    setOtpLoading(true);
+    setOtpMessage(null);
+    try {
+      await disable2FA();
+      setIs2faEnabled(false);
+      setOtpSent(false);
+      setOtpMessage({ type: 'success', text: 'Two-factor authentication disabled.' });
+    } catch (err: any) {
+      setOtpMessage({ type: 'error', text: 'Failed to disable 2FA.' });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,15 +258,59 @@ export const SettingsPage: React.FC = () => {
             <CardBody className="space-y-6">
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-4">Two-Factor Authentication</h3>
+
+                {otpMessage && (
+                  <div
+                    className={`mb-3 p-2 rounded-md text-sm ${
+                      otpMessage.type === 'success'
+                        ? 'bg-green-100 text-green-800 border border-green-200'
+                        : 'bg-red-100 text-red-800 border border-red-200'
+                    }`}
+                  >
+                    {otpMessage.text}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600">
                       Add an extra layer of security to your account
                     </p>
-                    <Badge variant="error" className="mt-1">Not Enabled</Badge>
+                    {is2faEnabled ? (
+                      <Badge variant="success" className="mt-1">Enabled</Badge>
+                    ) : (
+                      <Badge variant="error" className="mt-1">Not Enabled</Badge>
+                    )}
                   </div>
-                  <Button type="button" variant="outline">Enable</Button>
+
+                  {is2faEnabled ? (
+                    <Button type="button" variant="outline" onClick={handleDisable2FA} disabled={otpLoading}>
+                      {otpLoading ? 'Please wait...' : 'Disable'}
+                    </Button>
+                  ) : !otpSent ? (
+                    <Button type="button" variant="outline" onClick={handleEnable2FA} disabled={otpLoading}>
+                      {otpLoading ? 'Sending...' : 'Enable'}
+                    </Button>
+                  ) : null}
                 </div>
+
+                {otpSent && !is2faEnabled && (
+                  <div className="mt-4 flex items-end gap-3">
+                    <Input
+                      label="Enter verification code"
+                      name="otp_verification_code"
+                      autoComplete="one-time-code"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      placeholder="6-digit code"
+                    />
+                    <Button type="button" onClick={handleVerifyOtp} disabled={otpLoading}>
+                      {otpLoading ? 'Verifying...' : 'Verify'}
+                    </Button>
+                  </div>
+                )}
               </div>
               
               <div className="pt-6 border-t border-gray-200">

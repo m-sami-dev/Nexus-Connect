@@ -30,6 +30,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       bio: apiData.bio || '',
       avatarUrl: apiData.profile_picture || '', // Fixed missing property error
       createdAt: new Date().toISOString(),     // Fixed missing property error
+      walletBalance: parseFloat(apiData.wallet_balance) || 0,
+      is2faEnabled: !!apiData.is_2fa_enabled,
     };
   };
 

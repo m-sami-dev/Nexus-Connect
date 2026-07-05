@@ -225,6 +225,7 @@ export const EntrepreneurDashboard = () => {
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
             <button
               onClick={() => setIsPitchModalOpen(false)}
+              aria-label="Close"
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             >
               <X size={20} />

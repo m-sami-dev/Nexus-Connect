@@ -19,6 +19,14 @@ class User(AbstractUser):
     company_name = models.CharField(max_length=100, blank=True, null=True)
     industry = models.CharField(max_length=100, blank=True, null=True)
 
+    # Wallet balance for deposit/withdraw/transfer
+    wallet_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    # 2FA / OTP fields
+    is_2fa_enabled = models.BooleanField(default=False)
+    otp_code = models.CharField(max_length=6, blank=True, null=True)
+    otp_created_at = models.DateTimeField(blank=True, null=True)
+
     # Username ki jagah Email se login karne ke liye settings
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -101,8 +109,25 @@ class Document(models.Model):
         return self.title
     
 class Transaction(models.Model):
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_transactions', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_transactions', on_delete=models.CASCADE)
+    TYPE_CHOICES = (
+        ('deposit', 'Deposit'),
+        ('withdraw', 'Withdraw'),
+        ('transfer', 'Transfer'),
+    )
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    )
+
+    transaction_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    # Deposit: sender is null (money comes from outside/Stripe). Withdraw: receiver is null (money leaves platform).
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_transactions', on_delete=models.CASCADE, null=True, blank=True)
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_transactions', on_delete=models.CASCADE, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, default='pending') # pending, completed, failed
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    stripe_payment_intent_id = models.CharField(max_length=255, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transaction_type} - {self.amount} - {self.status}"

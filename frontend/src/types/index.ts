@@ -11,6 +11,8 @@ export interface User {
   bio: string;
   isOnline?: boolean;
   createdAt: string;
+  walletBalance?: number;
+  is2faEnabled?: boolean;
 }
 
 export interface Entrepreneur extends User {

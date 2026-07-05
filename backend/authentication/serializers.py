@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import User, StartupPitch, ConnectionRequest
 from django.db.models import Q
-from .models import Meeting, Document
+from .models import Meeting, Document, Transaction
 from .validators import (
     validate_username, validate_email_custom, validate_company_name,
     validate_text_field, sanitize_input, CustomPasswordValidator
@@ -81,8 +81,24 @@ class UserSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'role', 'bio', 'profile_picture', 'company_name', 'industry')
-        read_only_fields = ('id', 'email')
+        fields = ('id', 'username', 'email', 'role', 'bio', 'profile_picture', 'company_name', 'industry', 'wallet_balance', 'is_2fa_enabled')
+        read_only_fields = ('id', 'email', 'wallet_balance')
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for deposit/withdraw/transfer transaction history
+    """
+    sender_name = serializers.CharField(source='sender.username', read_only=True, default=None)
+    receiver_name = serializers.CharField(source='receiver.username', read_only=True, default=None)
+
+    class Meta:
+        model = Transaction
+        fields = [
+            'id', 'transaction_type', 'sender', 'sender_name', 'receiver', 'receiver_name',
+            'amount', 'status', 'stripe_payment_intent_id', 'timestamp'
+        ]
+        read_only_fields = ['id', 'sender', 'receiver', 'status', 'stripe_payment_intent_id', 'timestamp']
         
 
 class StartupPitchSerializer(serializers.ModelSerializer):

@@ -190,6 +190,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({ documentUrl, fileName = 'd
               <div className="flex items-center gap-2">
                 <input
                   type="number"
+                  aria-label="Page number"
                   min="1"
                   max={numPages}
                   value={currentPage}

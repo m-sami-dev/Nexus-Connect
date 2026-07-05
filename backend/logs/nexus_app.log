@@ -609,3 +609,283 @@ rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string=
 2026-07-05 03:11:57 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
 2026-07-05 03:11:57 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
 2026-07-05 03:11:59 - django.server - INFO - [log.py:249] - "GET /media/pitch_decks/DHC_Offer_Letters_17-162.pdf HTTP/1.1" 200 263738
+2026-07-05 22:16:24 - django.utils.autoreload - INFO - [autoreload.py:681] - Watching for file changes with StatReloader
+2026-07-05 22:16:51 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+2026-07-05 22:16:51 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+2026-07-05 22:16:51 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:16:51 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:16:51 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:16:51 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:16:59 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+2026-07-05 22:16:59 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:17:03 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 662
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/pitches/ HTTP/1.1" 200 0
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/connections/ HTTP/1.1" 200 0
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/pitches/ HTTP/1.1" 200 0
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/connections/ HTTP/1.1" 200 0
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:17:03 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:17:04 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:17:04 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:17:29 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:17:29 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:17:30 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:17:30 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:17:30 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:17:30 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:19:30 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:19:30 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:19:34 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:19:34 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:19:34 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:19:34 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:20:16 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:20:17 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:20:17 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:20:18 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:20:18 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:20:18 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:20:18 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:22:52 - django.utils.autoreload - INFO - [autoreload.py:265] - D:\New folder (2)\Nexus\backend\nexus_backend\settings.py changed, reloading.
+2026-07-05 22:22:56 - django.utils.autoreload - INFO - [autoreload.py:681] - Watching for file changes with StatReloader
+2026-07-05 22:26:34 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:26:34 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:26:34 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:26:34 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:26:39 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:26:42 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 662
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:26:42 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:28:05 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:28:08 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:28:08 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 670
+2026-07-05 22:28:08 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 224
+2026-07-05 22:28:08 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:28:08 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:28:09 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:28:09 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:28:18 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:28:21 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:28:21 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 662
+2026-07-05 22:28:22 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:28:22 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:28:22 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:28:22 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:28:22 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/transactions/ HTTP/1.1" 200 0
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/transactions/ HTTP/1.1" 200 0
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 52
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 52
+2026-07-05 22:29:21 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 220
+2026-07-05 22:29:48 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/payments/deposit/ HTTP/1.1" 200 0
+2026-07-05 22:29:52 - authentication - INFO - [payment_views.py:89] - Deposit completed for samitest1@gmail.com: 100
+2026-07-05 22:29:52 - django.server - INFO - [log.py:249] - "POST /api/auth/payments/deposit/ HTTP/1.1" 201 296
+2026-07-05 22:29:52 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 301
+2026-07-05 22:30:15 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/payments/withdraw/ HTTP/1.1" 200 0
+2026-07-05 22:30:15 - authentication - INFO - [payment_views.py:147] - Withdrawal completed for samitest1@gmail.com: 30
+2026-07-05 22:30:15 - django.server - INFO - [log.py:249] - "POST /api/auth/payments/withdraw/ HTTP/1.1" 201 270
+2026-07-05 22:30:15 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 526
+2026-07-05 22:30:28 - django.server - WARNING - [log.py:249] - "POST /api/auth/payments/withdraw/ HTTP/1.1" 400 56
+2026-07-05 22:31:06 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/payments/transfer/ HTTP/1.1" 200 0
+2026-07-05 22:31:06 - authentication - INFO - [payment_views.py:213] - Transfer completed: samitest1@gmail.com -> samitest13211@gmail.com: 20
+2026-07-05 22:31:06 - django.server - INFO - [log.py:249] - "POST /api/auth/payments/transfer/ HTTP/1.1" 201 278
+2026-07-05 22:31:07 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 759
+2026-07-05 22:31:23 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:31:26 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 670
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:31:26 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:31:29 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:31:29 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 284
+2026-07-05 22:31:29 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:31:29 - django.server - INFO - [log.py:249] - "GET /api/auth/transactions/ HTTP/1.1" 200 284
+2026-07-05 22:35:43 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:35:43 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:35:43 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:35:43 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:35:53 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:35:54 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:35:55 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:35:55 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:35:56 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:35:56 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:36:11 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/2fa/send-otp/ HTTP/1.1" 200 0
+2026-07-05 22:36:15 - authentication - INFO - [twofa_views.py:45] - OTP email sent to samitest13211@gmail.com
+2026-07-05 22:36:15 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/send-otp/ HTTP/1.1" 200 90
+2026-07-05 22:37:25 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/register/ HTTP/1.1" 200 0
+2026-07-05 22:37:25 - authentication.views - INFO - [views.py:38] - Registration attempt for email: choudharysami7264@gmail.com
+2026-07-05 22:37:27 - authentication.views - INFO - [views.py:43] - User registered successfully: choudharysami7264@gmail.com with role entrepreneur
+2026-07-05 22:37:27 - django.server - INFO - [log.py:249] - "POST /api/auth/register/ HTTP/1.1" 201 130
+2026-07-05 22:37:46 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:37:47 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:37:47 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 674
+2026-07-05 22:37:48 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 226
+2026-07-05 22:37:48 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 52
+2026-07-05 22:37:48 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:37:48 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 52
+2026-07-05 22:37:48 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:37:59 - authentication - INFO - [twofa_views.py:45] - OTP email sent to choudharysami7264@gmail.com
+2026-07-05 22:37:59 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/send-otp/ HTTP/1.1" 200 94
+2026-07-05 22:38:34 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/2fa/verify-otp/ HTTP/1.1" 200 0
+2026-07-05 22:38:34 - authentication - INFO - [twofa_views.py:100] - 2FA enabled for choudharysami7264@gmail.com
+2026-07-05 22:38:34 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/verify-otp/ HTTP/1.1" 200 72
+2026-07-05 22:40:55 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+2026-07-05 22:40:55 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/profile/ HTTP/1.1" 200 0
+2026-07-05 22:40:56 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:40:56 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:40:59 - django.server - INFO - [log.py:249] - "OPTIONS /api/auth/2fa/disable/ HTTP/1.1" 200 0
+2026-07-05 22:40:59 - authentication - INFO - [twofa_views.py:120] - 2FA disabled for choudharysami7264@gmail.com
+2026-07-05 22:40:59 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/disable/ HTTP/1.1" 200 73
+2026-07-05 22:41:04 - authentication - INFO - [twofa_views.py:45] - OTP email sent to choudharysami7264@gmail.com
+2026-07-05 22:41:04 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/send-otp/ HTTP/1.1" 200 94
+2026-07-05 22:41:19 - authentication - INFO - [twofa_views.py:100] - 2FA enabled for choudharysami7264@gmail.com
+2026-07-05 22:41:19 - django.server - INFO - [log.py:249] - "POST /api/auth/2fa/verify-otp/ HTTP/1.1" 200 72
+2026-07-05 22:49:18 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:49:18 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:49:18 - authentication.exceptions - ERROR - [exceptions.py:21] - API Exception: InvalidToken
+Traceback (most recent call last):
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 420, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\views.py", line 330, in perform_authentication
+    request.user
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 232, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework\request.py", line 385, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 49, in authenticate
+    validated_token = self.get_validated_token(raw_token)
+  File "D:\New folder (2)\Nexus\backend\venv\Lib\site-packages\rest_framework_simplejwt\authentication.py", line 113, in get_validated_token
+    raise InvalidToken(
+    ...<4 lines>...
+    )
+rest_framework_simplejwt.exceptions.InvalidToken: {'detail': ErrorDetail(string='Given token not valid for any token type', code='token_not_valid'), 'code': ErrorDetail(string='token_not_valid', code='token_not_valid'), 'messages': [{'token_class': ErrorDetail(string='AccessToken', code='token_not_valid'), 'token_type': ErrorDetail(string='access', code='token_not_valid'), 'message': ErrorDetail(string='Token is expired', code='token_not_valid')}]}
+2026-07-05 22:49:18 - django.server - WARNING - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 401 613
+2026-07-05 22:53:27 - authentication.views - INFO - [views.py:108] - Login attempt for: None
+2026-07-05 22:53:29 - authentication.views - INFO - [views.py:112] - User logged in successfully: None
+2026-07-05 22:53:29 - django.server - INFO - [log.py:249] - "POST /api/auth/login/ HTTP/1.1" 200 670
+2026-07-05 22:53:29 - django.server - INFO - [log.py:249] - "GET /api/auth/profile/ HTTP/1.1" 200 225
+2026-07-05 22:53:29 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:53:30 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 22:53:30 - django.server - INFO - [log.py:249] - "GET /api/auth/pitches/ HTTP/1.1" 200 346
+2026-07-05 22:53:30 - django.server - INFO - [log.py:249] - "GET /api/auth/connections/ HTTP/1.1" 200 260
+2026-07-05 23:04:49 - django.utils.autoreload - INFO - [autoreload.py:681] - Watching for file changes with StatReloader

@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { fetchPitches } from '../../services/pitchService';
 import { fetchConnections, sendConnectionRequest } from '../../services/connectionService';
 import { MeetingsList } from '../../components/collaboration/MeetingsList';
+import { VideoCall } from '../../components/collaboration/VideoCall';
 
 export const InvestorDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -18,6 +19,7 @@ export const InvestorDashboard: React.FC = () => {
   const [connections, setConnections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [connectingId, setConnectingId] = useState<number | null>(null);
+  const [activeRoom, setActiveRoom] = useState<string | null>(null);
   const [error, setError] = useState('');
 
   const loadData = async () => {
@@ -170,7 +172,7 @@ export const InvestorDashboard: React.FC = () => {
         </Card>
       </div>
 
-      <MeetingsList />
+      <MeetingsList onJoinCall={(roomId) => setActiveRoom(roomId)} />
 
       <div>
         <Card>
@@ -211,6 +213,17 @@ export const InvestorDashboard: React.FC = () => {
           </CardBody>
         </Card>
       </div>
+      {activeRoom && (
+        <div className="fixed inset-0 z-[60] bg-black/90 flex flex-col items-center justify-center p-4">
+          <button
+            onClick={() => setActiveRoom(null)}
+            className="absolute top-4 right-4 text-white text-lg"
+          >
+            Close Call
+          </button>
+          <VideoCall roomName={activeRoom} />
+        </div>
+      )}
     </div>
   );
 };
